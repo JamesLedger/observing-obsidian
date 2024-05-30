@@ -1,6 +1,11 @@
 import os
 import markdown
 from bs4 import BeautifulSoup
+from textblob import TextBlob
+
+# import spacy
+
+# nlp = spacy.load("en_core_web_sm")
 
 
 def find_markdown_files(directory):
@@ -18,17 +23,54 @@ def markdown_to_text(markdown_file):
     html = markdown.markdown(text)
     soup = BeautifulSoup(html, features="html.parser")
     text = soup.get_text()
-    file_date = markdown_file.split("\\")[-1]
-    return {file_date: text}
+
+    return text
+
+
+def semantic_analysis(text):
+    blob = TextBlob(text)
+    sentiment = blob.sentiment.polarity
+    return sentiment
+
+
+def visualise(all_text):
+    import matplotlib.pyplot as plt
+    import matplotlib.dates as mdates
+
+    dates = []
+
+    for record in all_text:
+        try:
+            dates.append(mdates.datestr2num(record["date"]))
+        except:
+            print(f"dodgy date found: {record['date']}")
+
+    sentiments = [record["semantics"] for record in all_text]
+
+    plt.figure(figsize=(10, 5))
+    plt.scatter(dates, sentiments, c=sentiments, cmap="RdYlGn", alpha=0.5)
+    plt.colorbar(label="Sentiment")
+    plt.title("Sentiment Analysis Over Time")
+    plt.xlabel("Month")
+    plt.ylabel("Sentiment")
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
+    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+    plt.gca().tick_params(axis="x", labelsize=8)  # reduce x-axis label size
+    plt.gcf().autofmt_xdate()  # rotate and align the x labels
+    plt.show()
 
 
 if __name__ == "__main__":
     markdown_files = find_markdown_files("C:\Obsidian\james-things\Daily thoughts")
 
-    all_text = {}
+    all_text = []
 
     for file in markdown_files:
         text = markdown_to_text(file)
-        all_text.update(text)
+        file_date = file.split("\\")[-1].split(".")[0]  # remove .md extension
 
-    print(all_text)
+        semantics = semantic_analysis(text)
+        record = {"date": file_date, "semantics": semantics}
+        all_text.append(record)
+
+    visualise(all_text)

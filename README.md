@@ -13,3 +13,7 @@ Python 3.11.0
 Activate venv `source env/scripts/activate`
 Install requirements `pip install -r requirements.txt`
 Run the app `py app.py`
+
+## Todo
+
+- parameterise folder location

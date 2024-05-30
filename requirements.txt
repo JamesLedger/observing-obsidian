@@ -1,2 +1,5 @@
 markdown==3.3.4
 beautifulsoup4==4.9.3
+textblob==0.18.0
+black==24.4.2
+matplotlib
