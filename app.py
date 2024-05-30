@@ -2,6 +2,8 @@ import os
 import markdown
 from bs4 import BeautifulSoup
 from textblob import TextBlob
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 # import spacy
 
@@ -34,8 +36,6 @@ def semantic_analysis(text):
 
 
 def visualise(all_text):
-    import matplotlib.pyplot as plt
-    import matplotlib.dates as mdates
 
     dates = []
 
@@ -53,10 +53,10 @@ def visualise(all_text):
     plt.title("Sentiment Analysis Over Time")
     plt.xlabel("Month")
     plt.ylabel("Sentiment")
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
     plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
     plt.gca().tick_params(axis="x", labelsize=8)  # reduce x-axis label size
-    plt.gcf().autofmt_xdate()  # rotate and align the x labels
+    plt.xticks(rotation="vertical")
     plt.show()
 
 
