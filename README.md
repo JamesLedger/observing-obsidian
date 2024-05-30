@@ -2,7 +2,7 @@
 
 Using python, NLP and text vectors to explore my daily notes over the past 8 years.
 
-Designed to work with notes stored in an obsidian vault.
+Designed to work with notes stored in an obsidian vault that are named in the format yyyy-mm-dd.
 
 ## Get running
 
