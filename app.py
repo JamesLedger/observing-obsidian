@@ -1,16 +1,20 @@
+""" This script reads all markdown files in a directory, extracts the text, performs sentiment analysis on the text, and visualises the sentiment over time. """
+
 import os
 import markdown
 from bs4 import BeautifulSoup
 from textblob import TextBlob
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import logging
+from typing import List, Dict
 
-# import spacy
+# Set up logging
+logging.basicConfig(level=logging.INFO)
 
-# nlp = spacy.load("en_core_web_sm")
 
-
-def find_markdown_files(directory):
+def find_markdown_files(directory: str) -> List[str]:
+    """Find all markdown files in a directory and return a list of file paths."""
     markdown_files = []
     for root, dirs, files in os.walk(directory):
         for file in files:
@@ -19,7 +23,8 @@ def find_markdown_files(directory):
     return markdown_files
 
 
-def markdown_to_text(markdown_file):
+def markdown_to_text(markdown_file) -> List[Dict]:
+    """Read a markdown file and return the text content."""
     with open(markdown_file, "r", encoding="utf-8") as file:
         text = file.read()
     html = markdown.markdown(text)
@@ -29,13 +34,15 @@ def markdown_to_text(markdown_file):
     return text
 
 
-def semantic_analysis(text):
+def semantic_analysis(text) -> float:
+    """Run semantic analysis on the text and return the sentiment."""
     blob = TextBlob(text)
     sentiment = blob.sentiment.polarity
     return sentiment
 
 
 def visualise(all_text):
+    """Visualise the sentiment analysis over time with a scatter plot."""
 
     dates = []
 
@@ -43,7 +50,7 @@ def visualise(all_text):
         try:
             dates.append(mdates.datestr2num(record["date"]))
         except:
-            print(f"dodgy date found: {record['date']}")
+            logging.error(f"dodgy date found: {record['date']}")
 
     sentiments = [record["semantics"] for record in all_text]
 
@@ -61,6 +68,7 @@ def visualise(all_text):
 
 
 if __name__ == "__main__":
+    """ Kicks everything off """
     markdown_files = find_markdown_files("C:\Obsidian\james-things\Daily thoughts")
 
     all_text = []
